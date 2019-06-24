@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404;
 class PostApiView(generics.ListCreateAPIView):
          model=Post;
          queryset=Post.objects.all();
-    
+         def perform_create(self, serializer):
+                  return serializer.save(author=self.request.user) 
     # def post(self,request,*args,**kwargs):
     #     serializer_class=PostCreateSerializer
     #     return self.create(request,*args,**kwargs);
@@ -22,12 +23,13 @@ class PostRetriveApiView(generics.RetrieveAPIView):
     model=Post;
     serializer_class=PostSerializer;
 class PostCreateApiView(generics.CreateAPIView):
-    model=Post;
-    serializer_class=PostCreateSerializer;
-    permission_classes=[permissions.AllowAny]
-    def perform_create(self,serializer):
-        if self.request.user.is_authenticated:
-                 serializer.save(author=self.request.user)
+    #  pass;
+        model=Post;
+        serializer_class=PostCreateSerializer;
+        permission_classes=[permissions.AllowAny]
+        def perform_create(self,serializer):
+            if self.request.user.is_authenticated:
+                    serializer.save(author=self.request.user)
 class PostUpdateApiView(generics.RetrieveUpdateAPIView):
     model=Post;
     lookup_field="pk";
